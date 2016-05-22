@@ -1,1 +1,1 @@
-a.function <- function() titlePanel("Old Faithful Geyser Data")
+a.function <- function() titlePanel("Test")
