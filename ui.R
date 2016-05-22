@@ -2,7 +2,6 @@ library(shiny)
 source('a.function.R')
 
 shinyUI(fluidPage(
-  a.function(),
   sidebarLayout(
     sidebarPanel(
        sliderInput("bins",
