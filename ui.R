@@ -1,7 +1,8 @@
 library(shiny)
+source('a.function.R')
 
 shinyUI(fluidPage(
-  titlePanel("Old Faithful Geyser Data"),
+  a.function(),
   sidebarLayout(
     sidebarPanel(
        sliderInput("bins",
