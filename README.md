@@ -1,13 +1,4 @@
----
-title: "readme"
-author: "Wouter van der Bijl"
-date: "May 24, 2016"
-output: html_document
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+# Find the canine!
 
 ## How to run
 
