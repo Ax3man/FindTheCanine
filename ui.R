@@ -1,17 +1,24 @@
 library(shiny)
-source('a.function.R')
 
 shinyUI(fluidPage(
   sidebarLayout(
     sidebarPanel(
-       sliderInput("bins",
-                   "Number of bins:",
-                   min = 1,
-                   max = 50,
-                   value = 30)
+      wellPanel(
+        textInput('locator', 'Your name'),
+        selectInput('species', 'Species', c('Dogs', 'Wolves')),
+        selectInput('year', 'Year', c('2014', '2015', '2016'))
+      )
     ),
     mainPanel(
-       plotOutput("distPlot")
+      fluidRow(
+        wellPanel(
+          radioButtons('canine', 'Selecting...', c('Janis', 'Dog2'), inline = TRUE),
+          actionButton('save', 'Save locations!', icon = icon('floppy-o'))
+        )
+      ),
+      fluidRow(  
+        plotOutput("distPlot", click = 'plot_click', '100%')
+      )
     )
-  )
-))
+) ) )
+
