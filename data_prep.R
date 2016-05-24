@@ -1,6 +1,6 @@
 ## Find the images
-#folder <- choose.dir()
-folder <- 'C:/Users/Wouter/Google Drive/PhD Stockholm/Christina/Puppy social networks/Test pics/Dogs/'
+folder <- choose.dir(caption = 'Select image folder')
+# folder <- 'C:/Users/Wouter/Google Drive/PhD Stockholm/Christina/Puppy social networks/Test pics/Dogs/'
 files <- list.files(folder)
 paths <- list.files(folder, full.names = T)
 sel <- files[tools::file_ext(files) == 'jpg']

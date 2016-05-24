@@ -13,6 +13,7 @@ if (!require(googlesheets)) {
 #### Image prep and build a table ----------------------------------------------
 
 source('data_prep.R')
+source('image_adjustments.R')
 
 barney <- load.image(paths[grep(paste0('barney_', OUT$time_code[1]), files)])
 bert <- load.image(paths[grep(paste0('bert_', OUT$time_code[1]), files)])
@@ -35,7 +36,8 @@ shinyServer(function(input, output) {
   reac <- reactiveValues(Janis = NULL, Dog2 = NULL)
   
   output$distPlot <- renderPlot({
-    plot(combined, axes = FALSE, main = 'The room', asp = 1)
+    plot(adjust_image(combined, input$brightness, input$contrast), 
+         axes = FALSE, main = 'The room', asp = 1)
     points(reac$Janis$x, reac$Janis$y, cex = 2, pch = 16, col = 2)
     points(reac$Dog2$x, reac$Dog2$y, cex = 2, pch = 16, col = 3)
   } )
