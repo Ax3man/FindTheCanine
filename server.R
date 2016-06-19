@@ -15,43 +15,50 @@ if (!require(googlesheets)) {
 source('data_prep.R')
 source('image_adjustments.R')
 
-barney <- load.image(paths[grep(paste0('barney_', OUT$time_code[1]), files)])
-bert <- load.image(paths[grep(paste0('bert_', OUT$time_code[1]), files)])
-bettie <- load.image(paths[grep(paste0('bettie_', OUT$time_code[1]), files)])
-cookie <- load.image(paths[grep(paste0('cookie_', OUT$time_code[1]), files)])
-dino <- load.image(paths[grep(paste0('dino_', OUT$time_code[1]), files)])
-ernie <- load.image(paths[grep(paste0('ernie_', OUT$time_code[1]), files)])
-fozzie <- load.image(paths[grep(paste0('fozzie_', OUT$time_code[1]), files)])
-fred <- load.image(paths[grep(paste0('fred_', OUT$time_code[1]), files)])
-snuff <- load.image(paths[grep(paste0('snuff_', OUT$time_code[1]), files)])
-
-combined <- add(list(pad(barney, 640, 'x', 1), pad(snuff, 640, 'x', -1)))
-
 gs <- gs_key('1R9FLU0xr9uNC79LCqzu2axQ4McPMjZWV0u96ap2kDIc', lookup = TRUE, 
              verbose = FALSE)
 dat <- gs_read(gs, 1, verbose = FALSE)
 to_check <- filter(dat, !checked)
 
 shinyServer(function(input, output) {
-  reac <- reactiveValues(Janis = NULL, Dog2 = NULL)
+  # Data prep
+  reac <- reactiveValues(available = NULL, click1 = NULL, combined = NULL, 
+                         chosen_time = NULL, 
+                         pup1 = NULL, pup2 = NULL, pup3 = NULL,
+                         pup4 = NULL, pup5 = NULL, pup6 = NULL)
+  reac$available <- find_pics(input$dir_select, input$year, input$species)
   
-  output$distPlot <- renderPlot({
-    plot(adjust_image(combined, input$brightness, input$contrast), 
-         axes = FALSE, main = 'The room', asp = 1)
-    points(reac$Janis$x, reac$Janis$y, cex = 2, pch = 16, col = 2)
-    points(reac$Dog2$x, reac$Dog2$y, cex = 2, pch = 16, col = 3)
-  } )
-  
+  # Record and correctly assign plot clicks
   observeEvent(input$plot_click, {
-    reac[[input$canine]] <- input$plot_click
+    if (is.null(v$click1)) {
+      v$click1 <- input$plot_click
+    } else {
+      reac[[input$canine]] <- c(head_x = reac$click1$x,
+                                head_y = reac$click1$y,
+                                tail_x = input$plot_click$x,
+                                tail_x = input$plot_click$y)
+      v$click1 <- NULL
+    }
   } )
   
   observeEvent(input$save, {
     gs_add_row(gs, 1,
-               c(input$locator, Sys.time(), sample(1000, 1), TRUE,
+               c(input$observer, Sys.time(), sample(1000, 1),
                  reac$Janis$x, reac$Janis$y, reac$Dog2$x, reac$Dog2$y))
-    reac$Janis <- NULL
-    reac$Dog2 <- NULL
+    for (i in paste0('pup', 1:6)) {
+      reac[[i]] <- NULL
+    }
+  } )
+  
+  output$distPlot <- renderPlot( {
+    reac$combined <- combine_imgs(reac$available, reac$chosen_time, 
+                                  input$year, input$species)
+    plot(adjust_image(reac$combined, input$brightness, input$contrast), 
+         axes = FALSE, main = 'The room', asp = 1)
+    for (i in paste0('pup', 1:6)) {
+      arrows(reac[[i]]$tail_x, reac[[i]]$tail_y, reac[[i]]$head_x, 
+             reac[[i]]$head_y, cex = 2, pch = 16, col = 2)
+    }
   } )
 } )
 

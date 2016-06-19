@@ -4,7 +4,8 @@ shinyUI(fluidPage(
   sidebarLayout(
     sidebarPanel(
       wellPanel(
-        textInput('locator', 'Your name'),
+        actionButton('dir_select', 'Select folder...'),
+        textInput('observer', 'Your name'),
         selectInput('species', 'Species', c('Dogs', 'Wolves')),
         selectInput('year', 'Year', c('2014', '2015', '2016'))
       ),
