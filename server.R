@@ -23,10 +23,14 @@ to_check <- filter(dat, !checked)
 shinyServer(function(input, output) {
   # Data prep
   reac <- reactiveValues(available = NULL, click1 = NULL, combined = NULL, 
-                         chosen_time = NULL, 
+                         chosen_time = NULL, dir = NULL,
                          pup1 = NULL, pup2 = NULL, pup3 = NULL,
                          pup4 = NULL, pup5 = NULL, pup6 = NULL)
-  reac$available <- find_pics(input$dir_select, input$year, input$species)
+  available <- reactive(find_pics(reac$dir, input$year, input$species))
+  
+  observeEvent(input$dir_select, {
+    reac$dir <- choose.dir()
+  } )
   
   # Record and correctly assign plot clicks
   observeEvent(input$plot_click, {
@@ -51,13 +55,14 @@ shinyServer(function(input, output) {
   } )
   
   output$distPlot <- renderPlot( {
-    reac$combined <- combine_imgs(reac$available, reac$chosen_time, 
-                                  input$year, input$species)
-    plot(adjust_image(reac$combined, input$brightness, input$contrast), 
+    combined <- reactive(combine_imgs(available(), reac$chosen_time, 
+                                      input$year, input$species))
+    plot(adjust_image(combined(), input$brightness, input$contrast), 
          axes = FALSE, main = 'The room', asp = 1)
     for (i in paste0('pup', 1:6)) {
-      arrows(reac[[i]]$tail_x, reac[[i]]$tail_y, reac[[i]]$head_x, 
-             reac[[i]]$head_y, cex = 2, pch = 16, col = 2)
+      if (!is.null(reac[[i]]))
+        arrows(reac[[i]]$tail_x, reac[[i]]$tail_y, reac[[i]]$head_x, 
+               reac[[i]]$head_y, cex = 2, pch = 16, col = 2)
     }
   } )
 } )

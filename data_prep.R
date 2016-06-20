@@ -1,4 +1,7 @@
 find_pics <- function(folder, year, species) {
+  if (is.null(folder)) {
+    return(NULL)
+  }
   # folder <- 'C:/Users/Wouter/Google Drive/PhD Stockholm/Christina/Puppy social networks/Test pics/Dogs/'
   files <- list.files(folder, recursive = TRUE)
   paths <- list.files(folder, full.names = T)
