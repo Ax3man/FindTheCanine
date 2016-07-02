@@ -3,7 +3,7 @@ combine_imgs <- function(available, chosen_time, year, species) {
     return(NULL)
   }
   paths <- filter(available, time_code == chosen_time)$path
-  if (year == '2016' & species == 'wolfs') {
+  if (year == '2016' & species == 'Wolves') {
     
     par(mar = c(0, 0, 0, 0), oma = c(0, 0, 0, 0))
     bert <- load.image(paths[3]) %>% imrotate(1.5) %>% extract(, 35:480, , ) %>% 

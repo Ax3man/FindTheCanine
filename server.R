@@ -17,8 +17,7 @@ source('image_adjustments.R')
 
 gs <- gs_key('1R9FLU0xr9uNC79LCqzu2axQ4McPMjZWV0u96ap2kDIc', lookup = TRUE, 
              verbose = FALSE)
-dat <- gs_read(gs, 1, verbose = FALSE)
-to_check <- filter(dat, !checked)
+gtable <- gs_read(gs, 1, verbose = FALSE)
 
 shinyServer(function(input, output) {
   # Data prep
@@ -32,26 +31,42 @@ shinyServer(function(input, output) {
     reac$dir <- choose.dir()
   } )
   
+  # Time navigation
+  observeEvent(input$`1forward`, {
+    reac$chosen_time <- as.character(as.numeric(reac$chosen_time) + 1)
+  } )
+  observeEvent(input$`1back`, {
+    reac$chosen_time <- as.character(as.numeric(reac$chosen_time) - 1)
+  } )
+  observeEvent(input$`5forward`, {
+    reac$chosen_time <- as.character(as.numeric(reac$chosen_time) + 5)
+  } )
+  observeEvent(input$`5back`, {
+    reac$chosen_time <- as.character(as.numeric(reac$chosen_time) - 5)
+  } )
+  
   # Record and correctly assign plot clicks
   observeEvent(input$plot_click, {
-    if (is.null(v$click1)) {
-      v$click1 <- input$plot_click
+    if (is.null(reac$click1)) {
+      reac$click1 <- input$plot_click
     } else {
       reac[[input$canine]] <- c(head_x = reac$click1$x,
                                 head_y = reac$click1$y,
                                 tail_x = input$plot_click$x,
                                 tail_x = input$plot_click$y)
-      v$click1 <- NULL
+      reac$click1 <- NULL
     }
   } )
   
   observeEvent(input$save, {
-    gs_add_row(gs, 1,
+    gs_add_row(gtable, 1,
                c(input$observer, Sys.time(), sample(1000, 1),
                  reac$Janis$x, reac$Janis$y, reac$Dog2$x, reac$Dog2$y))
+    gtable <- gs_read(gs, 1, verbose = FALSE)
     for (i in paste0('pup', 1:6)) {
       reac[[i]] <- NULL
     }
+    reac$chosen_time <- pick_new_time(available())
   } )
   
   output$distPlot <- renderPlot( {
@@ -65,5 +80,7 @@ shinyServer(function(input, output) {
                reac[[i]]$head_y, cex = 2, pch = 16, col = 2)
     }
   } )
+  #DEBUGGING
+  #output$printAvailable <- renderTable(head(available()))
 } )
 
