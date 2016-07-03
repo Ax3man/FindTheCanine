@@ -9,6 +9,9 @@ if (!require(dplyr)) {
 if (!require(googlesheets)) {
   install.packages('googlesheets')
 }
+if (!require(lubridate)) {
+  install.packages('lubridate')
+}
 
 #### Image prep and build a table ----------------------------------------------
 
