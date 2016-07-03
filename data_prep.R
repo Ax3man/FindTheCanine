@@ -1,5 +1,26 @@
-pick_new_time <- function(available) {
-  sample(unique(available$time_code), 1)
+pick_new_time <- function(available, method, gtable = NULL) {
+  if (method == 'random') {
+    chosen_time <- sample(unique(available$time_code), 1)
+  }
+  if (method == 'max_distance') {
+    available_times <- parse_date_time(available$time_code, 'ymdhm')
+    checked_times <- parse_date_time(gtable$time_code, 'ymdhm')
+    dists <- sapply(available_times, function(x) min(abs(x - checked_times)))
+    chosen_time <- available$time_code[which.max(dists)]
+  }
+  if (method == 'max_distance_fast') {
+    sel <- sample(1:nrow(available), 100)
+    available_times <- parse_date_time(available$time_code[sel], 'ymdhm')
+    checked_times <- parse_date_time(gtable$time_code, 'ymdhm')
+    dists <- sapply(available_times, function(x) min(abs(x - checked_times)))
+    chosen_time <- available$time_code[which.max(dists)]
+  }
+  return(chosen_time)
+}
+
+load_gtable <- function(gs, year, species) {
+  gtable <- gs_read(gs, 1, verbose = FALSE)
+  filter(gtable, year == year, species == species)
 }
 
 find_pics <- function(folder, year, species) {

@@ -29,6 +29,7 @@ combine_imgs <- function(available, chosen_time, year, species) {
     #plot(right_col, asp = 1, axes = FALSE)
     
     complete <- imappend(list(left_col, right_col), 'x')
+    complete <- imrotate(complete, 90)
     #plot(complete, asp = 1, axes = FALSE)
     
     # kermit <- load.image(paths[9])

@@ -3,6 +3,7 @@ library(shiny)
 shinyUI(fluidPage(
   sidebarLayout(
     sidebarPanel(
+      h1('FindTheCanine'),
       wellPanel(
         actionButton('dir_select', 'Select folder...'),
         textInput('observer', 'Your name'),
@@ -11,26 +12,33 @@ shinyUI(fluidPage(
       ),
       wellPanel(
         h3('Navigation'),
-        actionButton('5back', '5 min back', icon = icon('fast-backward')),
-        actionButton('1back', '1 min back', icon = icon('backward')),
-        actionButton('1forward', '1 min forward', icon = icon('forward')),
-        actionButton('5forward', '5 min forward', icon = icon('fast-forward'))
+        actionButton('randomize', 'Go to random time.', 
+                                       icon = icon('random')),
+        actionButton('5back', '5 min back', 
+                     icon = icon('fast-backward')),
+        actionButton('1back', '1 min back', 
+                     icon = icon('backward')),
+        actionButton('1forward', '1 min forward', 
+                     icon = icon('forward')),
+        actionButton('5forward', '5 min forward', 
+                     icon = icon('fast-forward'))
       ),
       wellPanel(
         h3('Image adjustment'),
-        sliderInput('brightness', 'Brightness', 0, 2, 1, 0.05),
-        sliderInput('contrast', 'Contrast', 0, 2, 1, 0.05)
-      )
+        sliderInput('brightness', 'Brightness', 1, 2, 1, 0.05),
+        sliderInput('contrast', 'Contrast', 1, 2, 1, 0.05)
+      ),
+      width = 3
     ),
     mainPanel(
       fluidRow(
         wellPanel(
-          radioButtons('canine', 'Selecting...', c('Janis', 'Dog2'), inline = TRUE),
+          uiOutput('pupSelector'),
           actionButton('save', 'Save locations!', icon = icon('floppy-o'))
         )
       ),
       fluidRow(
-        plotOutput("distPlot", click = 'plot_click', '1500px', '1500px')
+        plotOutput("distPlot", click = 'plot_click', '1200px', '800px')
       )#,
       #fluidRow(
       #  tableOutput('printAvailable')
