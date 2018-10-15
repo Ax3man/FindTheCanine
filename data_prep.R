@@ -30,6 +30,7 @@ find_pics <- function(folder, year, species) {
   # folder <- 'C:/Users/Wouter/Google Drive/PhD Stockholm/Christina/Puppy social networks/Test pics/Dogs/'
   files <- list.files(folder, recursive = TRUE)
   paths <- list.files(folder, recursive = TRUE, full.names = T)
+  paths <- paths[seq_along(files)]
   
   sel <- files[tools::file_ext(files) == 'jpg']
   sel <- files[-grep('\\(1\\).jpg', sel)]

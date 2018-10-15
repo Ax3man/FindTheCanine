@@ -47,6 +47,8 @@ combine_imgs <- function(available, chosen_time, year, species) {
     #   
     # ))
     # plot(imrotate(combined, 90), asp = 1, axes = FALSE)
+  } else {
+    return(NA)
   }
   return(complete)
 }
